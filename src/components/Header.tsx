@@ -1,8 +1,11 @@
 import { BellIcon, SearchIcon } from "@heroicons/react/solid";
 import Link from "next/link";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 
 function Header() {
+  const { data: session } = useSession();
+
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -19,7 +22,14 @@ function Header() {
     };
   }, []);
   //console.log("Scroll:", isScrolled);
-
+  if (session) {
+    return (
+      <>
+        Signed in as {session.user.email} <br />
+        <button onClick={() => signOut()}>Sign out</button>
+      </>
+    );
+  }
   return (
     <header className={`${isScrolled && "bg-[#141414]"}`}>
       <div className="flex items-center space-x-2 md:space-x-10">
@@ -48,6 +58,8 @@ function Header() {
             className="cursor-pointer rounded"
           />
         </Link>
+        Not signed in <br />
+        <button onClick={() => signIn()}>Sign in</button>
       </div>
     </header>
   );
