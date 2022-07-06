@@ -1,10 +1,13 @@
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
+import { useRecoilValue } from "recoil";
 import { Movie } from "typings";
 import Header from "@/components/Header";
 import Banner from "@/components/Banner";
 import requests from "@/utils/requests";
 import Row from "@/components/Row";
+import Modal from "@/components/Modal";
+import { modalState } from "atoms/modalAtom";
 
 interface Props {
   netflixOriginals: Movie[];
@@ -28,7 +31,7 @@ const Home = ({
   trendingNow,
 }: Props) => {
   //console.log(netflixOriginals);
-  //const showModal = useRecoilValue()
+  const showModal = useRecoilValue(modalState);
 
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
@@ -52,7 +55,7 @@ const Home = ({
           <Row title="Documentaries" movies={documentaries} />
         </section>
       </main>
-      {/* modal */}
+      {showModal && <Modal />}
     </div>
   );
 };
