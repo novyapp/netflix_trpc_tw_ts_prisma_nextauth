@@ -28,6 +28,8 @@ const Home = ({
   trendingNow,
 }: Props) => {
   //console.log(netflixOriginals);
+  //const showModal = useRecoilValue()
+
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
       <Head>
