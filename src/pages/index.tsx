@@ -8,6 +8,7 @@ import requests from "@/utils/requests";
 import Row from "@/components/Row";
 import Modal from "@/components/Modal";
 import { modalState } from "atoms/modalAtom";
+import Plans from "@/components/Plans";
 
 interface Props {
   netflixOriginals: Movie[];
@@ -32,6 +33,8 @@ const Home = ({
 }: Props) => {
   //console.log(netflixOriginals);
   const showModal = useRecoilValue(modalState);
+  const subscription = false;
+  if (!subscription) return <Plans />;
 
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
