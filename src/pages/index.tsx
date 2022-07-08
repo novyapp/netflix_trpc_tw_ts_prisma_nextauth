@@ -8,7 +8,9 @@ import requests from "@/utils/requests";
 import Row from "@/components/Row";
 import Modal from "@/components/Modal";
 import { modalState } from "atoms/modalAtom";
-import Plans from "@/components/Plans";
+import { useSession, getSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 interface Props {
   netflixOriginals: Movie[];
@@ -33,8 +35,19 @@ const Home = ({
 }: Props) => {
   //console.log(netflixOriginals);
   const showModal = useRecoilValue(modalState);
-  const subscription = false;
-  if (!subscription) return <Plans />;
+  //const { data: session, status } = useSession();
+  //console.log(session);
+  //console.log(status);
+  //console.log(session?.user);
+
+  // if (status === "loading") {
+  //   return <p>Loading...</p>;
+  // }
+
+  // if (status === "unauthenticated" || !session.user.isActive) {
+  //   router.push("/login");
+  //   return;
+  // }
 
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
@@ -64,7 +77,26 @@ const Home = ({
 
 export default Home;
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  console.log(session);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  if (!session.user?.isActive) {
+    return {
+      redirect: {
+        destination: "/plans",
+        permanent: false,
+      },
+    };
+  }
+
   const [
     netflixOriginals,
     trendingNow,

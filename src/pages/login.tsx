@@ -2,13 +2,22 @@ import React from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { getProviders, signIn } from "next-auth/react";
+import { getProviders, signIn, useSession } from "next-auth/react";
 import { FaGithub } from "react-icons/fa";
 import { useRouter } from "next/router";
 
 function login({ providers }: any) {
-  const router = useRouter();
-  console.log(providers);
+  // const { data: session, status } = useSession();
+
+  // if (status === "loading") {
+  //   return <p>Loading...</p>;
+  // }
+
+  // if (session?.user) {
+  //   router.push("/plans");
+  //   return;
+  // }
+
   return (
     <div className="relative flex h-screen w-screen flex-col bg-black md:items-center md:justify-center md:bg-transparent">
       <Head>
