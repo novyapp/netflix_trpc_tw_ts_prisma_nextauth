@@ -48,6 +48,7 @@ export const authOptions: NextAuthOptions = {
       session!.user!.id = user.id;
       session!.user!.isActive = user.isActive as boolean;
       session!.user!.stripeCustomerId = user.stripeCustomerId as string;
+      session!.user!.userSubscription = user.userSubscription as string;
 
       return session;
     },

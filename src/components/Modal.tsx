@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import MuiModal from "@mui/material/Modal";
 import { modalState, movieState } from "atoms/modalAtom";
 import { useRecoilState } from "recoil";
-import { PlusIcon, ThumbUpIcon, XIcon } from "@heroicons/react/solid";
+import {
+  PlusIcon,
+  ThumbUpIcon,
+  XIcon,
+  CheckIcon,
+} from "@heroicons/react/solid";
 import { VolumeOffIcon, VolumeUpIcon } from "@heroicons/react/outline";
 import { Element, Genre } from "typings";
 import ReactPlayer from "react-player";
 import { FaPlay } from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
 
 function Modal() {
   const [showModal, setShowModal] = useRecoilState(modalState);
@@ -14,6 +20,70 @@ function Modal() {
   const [trailer, setTrailer] = useState("");
   const [genres, setGenres] = useState<Genre[]>([]);
   const [muted, setMuted] = useState(true);
+  const [addedToList, setAddedToList] = useState(false);
+  const [mf, setMf] = useState([]);
+
+  const toastStyle = {
+    background: "white",
+    color: "black",
+    fontWeight: "bold",
+    fontSize: "16px",
+    padding: "15px",
+    borderRadius: "9999px",
+    maxWidth: "1000px",
+  };
+
+  useEffect(
+    () =>
+      setAddedToList(
+        mf.findIndex((result) => result.movieId === movie.id) !== -1
+      ),
+    [mf]
+  );
+
+  console.log("moje filmy", addedToList);
+  console.log("console log mf", mf);
+  console.log("movie", movie);
+
+  useEffect(() => {
+    fetch("/api/getmovie")
+      .then((response) => response.json())
+      .then((data) => setMf(data));
+  }, [movie, addedToList]);
+
+  const handleList = async () => {
+    if (addedToList) {
+      await fetch("/api/movie", {
+        method: "DELETE",
+        body: JSON.stringify(movie?.id),
+      });
+      toast(
+        `${movie?.title || movie?.original_name} has been removed from My List`,
+        {
+          duration: 8000,
+          style: toastStyle,
+        }
+      );
+    } else {
+      try {
+        const { id, title } = movie;
+        await fetch("/api/movie", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(movie),
+        });
+      } catch (error) {
+        console.error(error);
+      }
+      toast(
+        `${movie?.title || movie?.original_name} has been added to My List.`,
+        {
+          duration: 8000,
+          style: toastStyle,
+        }
+      );
+    }
+  };
 
   useEffect(() => {
     if (!movie) return;
@@ -42,6 +112,8 @@ function Modal() {
 
   const handleClose = () => {
     setShowModal(false);
+    setMovie(null);
+    toast.dismiss();
   };
 
   return (
@@ -51,6 +123,7 @@ function Modal() {
       className="fixed !top-7 left-0 right-0 z-50 mx-auto w-full max-w-5xl overflow-hidden overflow-y-scroll rounded-md scrollbar-hide"
     >
       <>
+        <Toaster position="bottom-center" />
         <button
           onClick={handleClose}
           className="modalButton absolute right-5 top-5 !z-40 h-9 w-9 border-none bg-[#181818] hover:bg-[#181818]"
@@ -72,8 +145,15 @@ function Modal() {
                 <FaPlay className="h-7 w-7 text-black" />
                 Play
               </button>
-              <button className="modalButton">
-                <PlusIcon className="h-7 w-7 " />
+              <button
+                className="modalButton"
+                onClick={() => setAddedToList(!addedToList)}
+              >
+                {addedToList ? (
+                  <CheckIcon className="h-7 w-7" onClick={handleList} />
+                ) : (
+                  <PlusIcon className="h-7 w-7" onClick={handleList} />
+                )}
               </button>
               <button className="modalButton">
                 <ThumbUpIcon className="h-7 w-7 " />

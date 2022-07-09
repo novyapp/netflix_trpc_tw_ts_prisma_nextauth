@@ -15,6 +15,15 @@ model Example {
     id String @id @default(cuid())
 }
 
+model movie {
+    id      String  @id @default(cuid())
+    movieId Int?
+    title   String?
+    poster  String?
+    user    User?   @relation(fields: [userId], references: [id])
+    userId  String?
+}
+
 // Neccessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -43,16 +52,18 @@ model Session {
 }
 
 model User {
-    id               String    @id @default(cuid())
-    name             String?
-    email            String?   @unique
-    emailVerified    DateTime?
-    image            String?
-    accounts         Account[]
-    sessions         Session[]
-    stripeCustomerId String?
-    isActive         Boolean   @default(false)
-    userSubscription String    @default("notier")
+    id                  String    @id @default(cuid())
+    name                String?
+    email               String?   @unique
+    emailVerified       DateTime?
+    image               String?
+    accounts            Account[]
+    sessions            Session[]
+    stripeCustomerId    String?
+    isActive            Boolean   @default(false)
+    userSubscription    String    @default("notier")
+    subscriptionCreated String?
+    movie               movie[]
 }
 
 model VerificationToken {

@@ -40,9 +40,9 @@ export default async (
       return res.status(400).send(`Webhook signature verification failed.`);
     }
     const subscription = event.data.object as Stripe.Subscription;
+    //console.log("sub_info", subscription);
     const sub_product = subscription.plan.product;
     const productinfo = await stripe.products.retrieve(sub_product);
-    console.log(productinfo);
     // Handle the event
     switch (event.type) {
       // Handle successful subscription creation
@@ -78,7 +78,6 @@ export default async (
           },
           data: {
             isActive: false,
-            userSubscription: null,
           },
         });
         break;

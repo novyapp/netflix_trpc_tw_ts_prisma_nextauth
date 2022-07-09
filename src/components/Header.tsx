@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import BasicMenu from "./BasicMenu";
 
 function Header() {
   const { data: session } = useSession();
@@ -39,6 +40,9 @@ function Header() {
           height={100}
           className="cursor-pointer object-contain"
         />
+
+        <BasicMenu />
+
         <ul className="hidden space-x-4 md:flex">
           <li className="headerLink">Home</li>
           <li className="headerLink">TV Shows</li>
@@ -53,13 +57,17 @@ function Header() {
         <BellIcon className="h-6 w-6" />
 
         {session && (
-          <button onClick={handleSignout} className="btn-signin">
+          <Link href="/account" className="btn-signin">
             <img
-              src="https://rb.gy/g1pwyx"
+              src={
+                session?.user?.image
+                  ? session?.user?.image
+                  : "https://rb.gy/g1pwyx"
+              }
               alt=""
-              className="cursor-pointer rounded"
+              className="cursor-pointer rounded w-8 h-8"
             />
-          </button>
+          </Link>
         )}
         {!session && (
           <Link href="/login" className="btn-signin">
