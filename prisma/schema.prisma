@@ -16,12 +16,22 @@ model Example {
 }
 
 model movie {
-    id      String  @id @default(cuid())
-    movieId Int?
-    title   String?
-    poster  String?
-    user    User?   @relation(fields: [userId], references: [id])
-    userId  String?
+    movieId           String  @id @default(cuid())
+    id                Int?
+    title             String?
+    poster            String?
+    user              User?   @relation(fields: [userId], references: [id])
+    userId            String?
+    backdrop_path     String?
+    release_date      String?
+    name              String?
+    original_language String?
+    original_name     String?
+    overview          String?
+    popularity        Int?
+    poster_path       String?
+    vote_average      Float?
+    vote_count        Int?
 }
 
 // Neccessary for Next auth

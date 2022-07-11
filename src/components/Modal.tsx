@@ -35,9 +35,7 @@ function Modal() {
 
   useEffect(
     () =>
-      setAddedToList(
-        mf.findIndex((result) => result.movieId === movie.id) !== -1
-      ),
+      setAddedToList(mf.findIndex((result) => result.id === movie?.id) !== -1),
     [mf]
   );
 

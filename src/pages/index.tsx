@@ -34,7 +34,7 @@ const Home = ({
   mymovies,
 }: Props) => {
   const showModal = useRecoilValue(modalState);
-  console.log("my movies", mymovies);
+  console.log("my movies front", mymovies);
 
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
@@ -67,7 +67,7 @@ export default Home;
 export const getServerSideProps = async (context: any) => {
   const session = await getSession(context);
 
-  const mymovies = await prisma?.movie.findMany({
+  const mymovies = await prisma?.movie?.findMany({
     where: {
       userId: session?.user?.id,
     },

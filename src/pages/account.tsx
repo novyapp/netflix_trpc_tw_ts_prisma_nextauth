@@ -6,7 +6,7 @@ import Membership from "@/components/Membership";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import moment from "moment";
 
-function account({ plans, subscriptions }) {
+const Account = ({ plans, subscriptions }) => {
   const { data: session } = useSession();
   //console.log(subscriptions);
 
@@ -38,6 +38,7 @@ function account({ plans, subscriptions }) {
             width={120}
             height={120}
             className="cursor-pointer object-contain"
+            alt=""
           />
         </Link>
         <Link href="/account">
@@ -89,9 +90,9 @@ function account({ plans, subscriptions }) {
       </main>
     </div>
   );
-}
+};
 
-export default account;
+export default Account;
 
 export const getServerSideProps = async (context: any) => {
   const session = await getSession(context);

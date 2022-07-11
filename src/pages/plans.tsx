@@ -1,18 +1,18 @@
 import React from "react";
 import initStripe from "stripe";
-import { loadStripe } from "@stripe/stripe-js";
 import Head from "next/head";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/router";
 import { CheckIcon } from "@heroicons/react/solid";
 import { useState } from "react";
 import Table from "@/components/Table";
 import Loader from "@/components/Loader";
 
 export const getStaticProps = async () => {
-  const stripe = initStripe(
-    `sk_test_51LIvOrD5RlaM55m9pGOBlaxfOL7yZ068afFx48bAUgc3Uffr9aD0pZxAxVYTSIzxI6PQYcOUHEK1frFyzgHj4LTg00pvaTkyph`
+  const stripe = new initStripe(
+    "sk_test_51LIvOrD5RlaM55m9pGOBlaxfOL7yZ068afFx48bAUgc3Uffr9aD0pZxAxVYTSIzxI6PQYcOUHEK1frFyzgHj4LTg00pvaTkyph" as string,
+    {
+      apiVersion: "2020-08-27",
+    }
   );
   const { data: prices } = await stripe.prices.list();
 
@@ -39,10 +39,9 @@ export const getStaticProps = async () => {
   };
 };
 
-const plans = ({ plans }: any) => {
-  const [selectedPlan, setSelectedPlan] = useState(plans[1]);
-  const [isBillingLoading, setBillingLoading] = useState(false);
-  console.log("selected", selectedPlan);
+const Plans = ({ plans }: any) => {
+  const [selectedPlan, setSelectedPlan] = useState<any>(plans[1]);
+  const [isBillingLoading, setBillingLoading] = useState<boolean>(false);
 
   const processSubscription = (planId: string) => async () => {
     setBillingLoading(true);
@@ -132,4 +131,4 @@ const plans = ({ plans }: any) => {
   );
 };
 
-export default plans;
+export default Plans;
