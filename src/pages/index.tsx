@@ -1,16 +1,13 @@
 import Head from "next/head";
 import { trpc } from "../utils/trpc";
-import { useRecoilValue } from "recoil";
 import { Movie } from "typings";
 import Header from "@/components/Header";
 import Banner from "@/components/Banner";
 import requests from "@/utils/requests";
 import Row from "@/components/Row";
 import Modal from "@/components/Modal";
-import { modalState } from "atoms/modalAtom";
-import { getSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { getSession, useSession } from "next-auth/react";
+import { useStore } from "@/store";
 
 interface Props {
   netflixOriginals: Movie[];
@@ -21,8 +18,7 @@ interface Props {
   horrorMovies: Movie[];
   romanceMovies: Movie[];
   documentaries: Movie[];
-  mymovies: Movie[];
-  moviess: Movie[];
+  mymovies: Movie[] | null;
 }
 
 const Home = ({
@@ -35,12 +31,20 @@ const Home = ({
   topRated,
   trendingNow,
 }: Props) => {
-  const showModal = useRecoilValue(modalState);
+  const { data: session, status } = useSession();
+  console.log(session);
+  const showModal = useStore((state) => state.modal);
+  const setShowModal = useStore((state) => state.setModal);
+
+  //console.log("showModal", showModal);
+  //const showModal = useRecoilValue(modalState);
   const { data: mymovies, isLoading: lod } = trpc.useQuery([
     "movies.get-my-movies",
-    { open: showModal },
+    { open: showModal, userId: session?.user?.id },
   ]);
-
+  if (status === "loading") {
+    return <p>loading</p>;
+  }
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
       <Head>

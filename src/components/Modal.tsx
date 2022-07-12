@@ -1,31 +1,35 @@
 import React, { useEffect, useState } from "react";
 import MuiModal from "@mui/material/Modal";
-import { modalState, movieState } from "atoms/modalAtom";
-import { useRecoilState } from "recoil";
-import {
-  PlusIcon,
-  ThumbUpIcon,
-  XIcon,
-  CheckIcon,
-  MoonIcon,
-} from "@heroicons/react/solid";
+// import { modalState, movieState } from "atoms/modalAtom";
+// import { useRecoilState } from "recoil";
+import { PlusIcon, XIcon, CheckIcon } from "@heroicons/react/solid";
 import { VolumeOffIcon, VolumeUpIcon } from "@heroicons/react/outline";
 import { Element, Genre } from "typings";
 import ReactPlayer from "react-player";
 import { FaPlay } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import { trpc } from "../utils/trpc";
+import { useStore, useMovieState } from "@/store";
 import { useSession } from "next-auth/react";
 
 function Modal() {
-  const [showModal, setShowModal] = useRecoilState(modalState);
-  const [movie, setMovie] = useRecoilState(movieState);
+  const { data: session, status } = useSession();
+  console.log("Modal session", session);
+
+  const showModal = useStore((state) => state.modal);
+  const setShowModal = useStore((state) => state.setModal);
+  //const [showModal, setShowModal] = useRecoilState(modalState);
+  //const [movie, setMovie] = useRecoilState(movieState);
+  const movie = useMovieState((state) => state.movies);
+  const setMovie = useMovieState((state) => state.addMovie);
+  //console.log("Modal cum", movie);
+
   const [trailer, setTrailer] = useState("");
   const [genres, setGenres] = useState<Genre[]>([]);
   const [muted, setMuted] = useState(true);
   const [addedToList, setAddedToList] = useState(false);
   const [isloading, setIsLoading] = useState(true);
-  const [mf, setMf] = useState([]);
+  const [mf, setMf] = useState([] as any[]);
 
   const toastStyle = {
     background: "white",
@@ -37,7 +41,7 @@ function Modal() {
     maxWidth: "1000px",
   };
   const { data: singlemovie, isLoading: sglod } = trpc.useQuery(
-    ["movies.singlemovie"],
+    ["movies.singlemovie", { userId: session?.user?.id }],
     {
       refetchInterval: false,
       refetchOnReconnect: false,
@@ -54,7 +58,7 @@ function Modal() {
 
   // console.log("moje filmy", addedToList);
   //console.log("console log mf", mf);
-  console.log("movie", movie.id);
+  console.log("movie", movie?.id);
   //console.log("addedtolist", addedToList);
   //console.log("my movies trpc", singlemovie);
   //console.log("del trpc", deletemovie);
@@ -69,6 +73,7 @@ function Modal() {
   const deleteMovieToList = async () => {
     deletemovie.mutate({
       id: movie.id,
+      userId: session?.user?.id,
     });
     setAddedToList(false);
     toast(
@@ -81,7 +86,7 @@ function Modal() {
   };
 
   const addMovieToList = async () => {
-    addmovie.mutate(movie);
+    addmovie.mutate({ ...movie, userId: session?.user?.id });
     setAddedToList(true);
     toast(
       `${movie?.title || movie?.original_name} has been added to My List.`,
@@ -124,6 +129,9 @@ function Modal() {
   };
   if (sglod) {
     return <p>Loading</p>;
+  }
+  if (status === "loading") {
+    return <p>loading</p>;
   }
 
   return (

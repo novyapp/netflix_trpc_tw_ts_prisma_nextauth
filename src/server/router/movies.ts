@@ -2,7 +2,6 @@ import { createRouter } from "./context";
 import { getSession } from "next-auth/react";
 import { prisma } from "../db/client";
 import { z } from "zod";
-const session = getSession();
 
 export const moviesRouter = createRouter()
   .query("get-movies", {
@@ -16,26 +15,30 @@ export const moviesRouter = createRouter()
   })
 
   .query("get-my-movies", {
-    input: z
-      .object({
-        open: z.boolean().nullish(),
-      })
-      .nullish(),
+    input: z.object({
+      open: z.boolean(),
+      userId: z.string().nullish(),
+    }),
+
     async resolve({ input }) {
       const result = await prisma.movie.findMany({
         where: {
-          userId: session?.user?.id,
+          userId: input.userId,
         },
       });
+      console.log("api results", result, input.userId);
       return result;
     },
   })
 
   .query("singlemovie", {
-    async resolve() {
+    input: z.object({
+      userId: z.string().nullish(),
+    }),
+    async resolve({ input }) {
       const result = await prisma.movie.findMany({
         where: {
-          userId: session?.user?.id,
+          userId: input.userId,
         },
       });
       return result;
@@ -45,7 +48,7 @@ export const moviesRouter = createRouter()
     input: z.object({
       title: z.string().nullish(),
       id: z.number(),
-      userId: z.undefined(),
+      userId: z.string(),
       backdrop_path: z.string().nullish(),
       release_date: z.string().nullish(),
       name: z.string().nullish(),
@@ -61,7 +64,7 @@ export const moviesRouter = createRouter()
         data: {
           title: input.title,
           id: input.id,
-          userId: session?.user?.id,
+          userId: input.userId,
           backdrop_path: input.backdrop_path,
           release_date: input.release_date,
           name: input.name,
@@ -79,12 +82,12 @@ export const moviesRouter = createRouter()
   .mutation("delete-movie", {
     input: z.object({
       id: z.number(),
+      userId: z.string(),
     }),
-
     async resolve({ input }) {
       const deletemovie = await prisma.movie.deleteMany({
         where: {
-          userId: session?.user?.id,
+          userId: input.userId,
           id: input.id,
         },
       });

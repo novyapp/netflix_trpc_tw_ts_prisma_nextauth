@@ -2,7 +2,11 @@ import { useState } from "react";
 import Loader from "./Loader";
 import { useSession } from "next-auth/react";
 
-function Membership({ subscriptions }) {
+interface Props {
+  subscriptions: any;
+}
+
+function Membership({ subscriptions }: Props) {
   console.log(subscriptions);
   const { data: session } = useSession();
   const [isBillingLoading, setBillingLoading] = useState(false);

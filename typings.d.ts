@@ -4,8 +4,8 @@ export interface Genre {
 }
 
 export interface Movie {
-  title: string;
-  backdrop_path: string;
+  title?: string;
+  backdrop_path?: string;
   media_type?: string;
   release_date?: string;
   first_air_date: string;
@@ -20,6 +20,8 @@ export interface Movie {
   poster_path: string;
   vote_average: number;
   vote_count: number;
+  poster?: string;
+  userId: string;
 }
 
 export interface Element {
