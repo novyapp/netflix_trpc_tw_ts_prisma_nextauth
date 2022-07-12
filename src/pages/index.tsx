@@ -9,6 +9,8 @@ import Row from "@/components/Row";
 import Modal from "@/components/Modal";
 import { modalState } from "atoms/modalAtom";
 import { getSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
 interface Props {
   netflixOriginals: Movie[];
@@ -20,6 +22,7 @@ interface Props {
   romanceMovies: Movie[];
   documentaries: Movie[];
   mymovies: Movie[];
+  moviess: Movie[];
 }
 
 const Home = ({
@@ -31,10 +34,12 @@ const Home = ({
   romanceMovies,
   topRated,
   trendingNow,
-  mymovies,
 }: Props) => {
   const showModal = useRecoilValue(modalState);
-  console.log("my movies front", mymovies);
+  const { data: mymovies, isLoading: lod } = trpc.useQuery([
+    "movies.get-my-movies",
+    { open: showModal },
+  ]);
 
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
@@ -47,7 +52,7 @@ const Home = ({
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
-          <Row title="My Movies" movies={mymovies} />
+          {!lod && <Row title="My Movies" movies={mymovies} />}
           <Row title="Trending Now" movies={trendingNow} />
           <Row title="Top Rated" movies={topRated} />
           <Row title="Action Thrillers" movies={actionMovies} />
@@ -67,13 +72,6 @@ export default Home;
 export const getServerSideProps = async (context: any) => {
   const session = await getSession(context);
 
-  const mymovies = await prisma?.movie?.findMany({
-    where: {
-      userId: session?.user?.id,
-    },
-  });
-
-  //console.log(session);
   if (!session) {
     return {
       redirect: {
@@ -121,7 +119,6 @@ export const getServerSideProps = async (context: any) => {
       horrorMovies: horrorMovies.results,
       romanceMovies: romanceMovies.results,
       documentaries: documentaries.results,
-      mymovies: mymovies,
     },
   };
 };

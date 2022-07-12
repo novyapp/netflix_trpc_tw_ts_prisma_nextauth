@@ -7,7 +7,6 @@ import {
   ThumbUpIcon,
   XIcon,
   CheckIcon,
-  MoonIcon,
 } from "@heroicons/react/solid";
 import { VolumeOffIcon, VolumeUpIcon } from "@heroicons/react/outline";
 import { Element, Genre } from "typings";
@@ -15,7 +14,6 @@ import ReactPlayer from "react-player";
 import { FaPlay } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import { trpc } from "../utils/trpc";
-import { useSession } from "next-auth/react";
 
 function Modal() {
   const [showModal, setShowModal] = useRecoilState(modalState);
@@ -24,7 +22,6 @@ function Modal() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [muted, setMuted] = useState(true);
   const [addedToList, setAddedToList] = useState(false);
-  const [isloading, setIsLoading] = useState(true);
   const [mf, setMf] = useState([]);
 
   const toastStyle = {
@@ -36,60 +33,74 @@ function Modal() {
     borderRadius: "9999px",
     maxWidth: "1000px",
   };
-  const { data: singlemovie, isLoading: sglod } = trpc.useQuery(
-    ["movies.singlemovie"],
-    {
-      refetchInterval: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-    }
+
+  useEffect(
+    () =>
+      setAddedToList(mf.findIndex((result) => result.id === movie?.id) !== -1),
+    [mf]
   );
+
+  // console.log("moje filmy", addedToList);
+  // console.log("console log mf", mf);
+  // console.log("movie", movie);
+  const { data: singlemovie, isLoading: sglod } = trpc.useQuery([
+    "movies.singlemovie",
+  ]);
+
+  useEffect(() => {
+    fetch("/api/getmovie")
+      .then((response) => response.json())
+      .then((data) => setMf(data));
+  }, [movie, addedToList]);
+
+  // useEffect(() => {
+  //   if (!sglod) {
+  //     setMf(singlemovie);
+  //   }
+  // }, [movie, addedToList]);
+
   const addmovie = trpc.useMutation(["movies.add-movie"]);
   const deletemovie = trpc.useMutation(["movies.delete-movie"]);
 
-  useEffect(() => {
-    setAddedToList(mf.findIndex((result) => result.id === movie?.id) !== -1);
-    setIsLoading(false);
-  }, [mf]);
+  const handleList = async () => {
+    if (addedToList) {
+      deletemovie.mutate({ input: movie.id });
+      // const deletemovie = trpc.useMutation(["movies.delete-movie"]);
 
-  // console.log("moje filmy", addedToList);
-  //console.log("console log mf", mf);
-  console.log("movie", movie.id);
-  //console.log("addedtolist", addedToList);
-  //console.log("my movies trpc", singlemovie);
-  //console.log("del trpc", deletemovie);
-  console.log("loading", isloading);
+      // await fetch("/api/movie", {
+      //   method: "DELETE",
+      //   body: JSON.stringify(movie?.id),
+      // });
 
-  useEffect(() => {
-    if (!sglod) {
-      setMf(singlemovie);
+      toast(
+        `${movie?.title || movie?.original_name} has been removed from My List`,
+        {
+          duration: 8000,
+          style: toastStyle,
+        }
+      );
+    } else {
+      addmovie.mutate(movie);
+
+      // try {
+      //   const { id, title } = movie;
+      //   await fetch("/api/movie", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(movie),
+      //   });
+      // } catch (error) {
+      //   console.error(error);
+      // }
+
+      toast(
+        `${movie?.title || movie?.original_name} has been added to My List.`,
+        {
+          duration: 8000,
+          style: toastStyle,
+        }
+      );
     }
-  }, [mf, addedToList, singlemovie]);
-
-  const deleteMovieToList = async () => {
-    deletemovie.mutate({
-      id: movie.id,
-    });
-    setAddedToList(false);
-    toast(
-      `${movie?.title || movie?.original_name} has been removed from My List`,
-      {
-        duration: 8000,
-        style: toastStyle,
-      }
-    );
-  };
-
-  const addMovieToList = async () => {
-    addmovie.mutate(movie);
-    setAddedToList(true);
-    toast(
-      `${movie?.title || movie?.original_name} has been added to My List.`,
-      {
-        duration: 8000,
-        style: toastStyle,
-      }
-    );
   };
 
   useEffect(() => {
@@ -122,9 +133,6 @@ function Modal() {
     setMovie(null);
     toast.dismiss();
   };
-  if (sglod) {
-    return <p>Loading</p>;
-  }
 
   return (
     <MuiModal
@@ -155,25 +163,19 @@ function Modal() {
                 <FaPlay className="h-7 w-7 text-black" />
                 Play
               </button>
-              {!isloading && (
-                <>
-                  {!addedToList && (
-                    <button className="modalButton" onClick={addMovieToList}>
-                      <PlusIcon className="h-7 w-7" />
-                    </button>
-                  )}
-
-                  {addedToList && (
-                    <button className="modalButton" onClick={deleteMovieToList}>
-                      <CheckIcon className="h-7 w-7" />
-                    </button>
-                  )}
-                </>
-              )}
-              {/* 
+              <button
+                className="modalButton"
+                onClick={() => setAddedToList(!addedToList)}
+              >
+                {addedToList ? (
+                  <CheckIcon className="h-7 w-7" onClick={handleList} />
+                ) : (
+                  <PlusIcon className="h-7 w-7" onClick={handleList} />
+                )}
+              </button>
               <button className="modalButton">
                 <ThumbUpIcon className="h-7 w-7 " />
-              </button> */}
+              </button>
             </div>
             <button onClick={() => setMuted(!muted)} className="modalButton">
               {muted ? (

@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 // POST /api/post
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("mymovies api", req.body);
+  //console.log("mymovies api", req.body);
   const session = await getSession({ req });
   const result = await prisma.movie.findMany({
     where: {
@@ -12,5 +12,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
   res.status(200).json(result);
-  console.log(result);
+  //console.log(result);
 };

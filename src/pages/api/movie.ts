@@ -17,14 +17,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     vote_count,
     name,
   } = req.body;
-  console.log(req.body);
-  console.log("api movie", id, original_title);
+  //console.log(req.body);
+  //console.log("api movie", id, original_title);
   const session = await getSession({ req });
 
   //console.log("api movie session", session);
-  console.log("movie id delete", id);
-  console.log(req.body);
-  console.log("deleted movie");
+  //console.log("movie id delete", id);
+  //console.log(req.body);
+  //console.log("deleted movie");
   if (req.method === "DELETE") {
     const movieId = parseInt(req.body);
     const deletemovie = await prisma.movie.deleteMany({
