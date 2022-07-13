@@ -1,19 +1,25 @@
 import React from "react";
-import initStripe from "stripe";
 import Head from "next/head";
 import Link from "next/link";
 import { CheckIcon } from "@heroicons/react/solid";
 import { useState } from "react";
 import Table from "@/components/Table";
 import Loader from "@/components/Loader";
+import { getSession } from "next-auth/react";
+import { stripe } from "@/utils/stripe";
 
-export const getStaticProps = async () => {
-  const stripe = new initStripe(
-    "sk_test_51LIvOrD5RlaM55m9pGOBlaxfOL7yZ068afFx48bAUgc3Uffr9aD0pZxAxVYTSIzxI6PQYcOUHEK1frFyzgHj4LTg00pvaTkyph" as string,
-    {
-      apiVersion: "2020-08-27",
-    }
-  );
+export const getServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+
+  if (session?.user?.userSubscription !== "notier") {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   const { data: prices } = await stripe.prices.list();
 
   const plans = await Promise.all(

@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { buffer } from "micro";
 import Stripe from "stripe";
+import { stripe } from "@/utils/stripe";
 import { prisma } from "../../../server/db/client";
 
-const endpointSecret =
-  "whsec_80d6171c6b912b8c1a354ea7b326f911cbb29b2b95fb9f033a985a53e576ad7d";
+const endpointSecret = `${process.env.STRIPE_ENDPOINT_SECRET}`;
 
 export const config = {
   api: {
@@ -19,12 +19,6 @@ export default async (
   try {
     const requestBuffer = await buffer(req);
     const sig = req.headers["stripe-signature"] as string;
-    const stripe = new Stripe(
-      "sk_test_51LIvOrD5RlaM55m9pGOBlaxfOL7yZ068afFx48bAUgc3Uffr9aD0pZxAxVYTSIzxI6PQYcOUHEK1frFyzgHj4LTg00pvaTkyph" as string,
-      {
-        apiVersion: "2020-08-27",
-      }
-    );
 
     let event;
 
@@ -40,7 +34,6 @@ export default async (
       return res.status(400).send(`Webhook signature verification failed.`);
     }
     const subscription = event.data.object as Stripe.Subscription;
-    //console.log("sub_info", subscription);
     const sub_product = subscription.plan.product;
     const productinfo = await stripe.products.retrieve(sub_product);
     // Handle the event
@@ -59,7 +52,6 @@ export default async (
         break;
       }
       case "customer.subscription.updated": {
-        //console.log("sub upgrade", subscription);
         await prisma.user.update({
           where: {
             id: subscription.metadata.payingUserId,

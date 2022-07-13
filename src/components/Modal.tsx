@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import MuiModal from "@mui/material/Modal";
-// import { modalState, movieState } from "atoms/modalAtom";
-// import { useRecoilState } from "recoil";
 import { PlusIcon, XIcon, CheckIcon } from "@heroicons/react/solid";
 import { VolumeOffIcon, VolumeUpIcon } from "@heroicons/react/outline";
-import { Element, Genre } from "typings";
+import { Element, Genre, Movie } from "typings";
 import ReactPlayer from "react-player";
 import { FaPlay } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
@@ -14,22 +12,21 @@ import { useSession } from "next-auth/react";
 
 function Modal() {
   const { data: session, status } = useSession();
-  console.log("Modal session", session);
-
-  const showModal = useStore((state) => state.modal);
-  const setShowModal = useStore((state) => state.setModal);
-  //const [showModal, setShowModal] = useRecoilState(modalState);
-  //const [movie, setMovie] = useRecoilState(movieState);
-  const movie = useMovieState((state) => state.movies);
-  const setMovie = useMovieState((state) => state.addMovie);
-  //console.log("Modal cum", movie);
+  const [showModal, setShowModal] = useStore((state) => [
+    state.modal,
+    state.setModal,
+  ]);
+  const [movie, setMovie] = useMovieState((state) => [
+    state.movies,
+    state.addMovie,
+  ]);
 
   const [trailer, setTrailer] = useState("");
   const [genres, setGenres] = useState<Genre[]>([]);
   const [muted, setMuted] = useState(true);
   const [addedToList, setAddedToList] = useState(false);
   const [isloading, setIsLoading] = useState(true);
-  const [mf, setMf] = useState([] as any[]);
+  const [mf, setMf] = useState([] as Movie[]);
 
   const toastStyle = {
     background: "white",
@@ -55,15 +52,6 @@ function Modal() {
     setAddedToList(mf.findIndex((result) => result.id === movie?.id) !== -1);
     setIsLoading(false);
   }, [mf]);
-
-  // console.log("moje filmy", addedToList);
-  //console.log("console log mf", mf);
-  console.log("movie", movie?.id);
-  //console.log("addedtolist", addedToList);
-  //console.log("my movies trpc", singlemovie);
-  //console.log("del trpc", deletemovie);
-  console.log("loading", isloading);
-
   useEffect(() => {
     if (!sglod) {
       setMf(singlemovie);
@@ -123,7 +111,7 @@ function Modal() {
   }, [movie]);
 
   const handleClose = () => {
-    setShowModal(false);
+    setShowModal();
     setMovie(null);
     toast.dismiss();
   };

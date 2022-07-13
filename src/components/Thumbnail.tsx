@@ -10,20 +10,15 @@ interface Props {
 }
 
 function Thumbnail({ movie }: Props) {
-  const modal = useStore((state) => state.modal);
-  const setModal = useStore((state) => state.setModal);
-  //console.log("showModal", modal);
-  const curmovie = useMovieState((state) => state.movies);
-  const setCurmovie = useMovieState((state) => state.addMovie);
+  const [modal, setModal] = useStore((state) => [state.modal, state.setModal]);
+  const [curmovie, setCurmovie] = useMovieState((state) => [
+    state.movies,
+    state.addMovie,
+  ]);
 
-  //const [showModal, setShowModal] = useRecoilState(modalState);
-  //const [currentMovie, setCurrentMovie] = useRecoilState(movieState);
-  //console.log("cun", curmovie);
-  //console.log("cur", currentMovie);
   return (
     <div
       onClick={() => {
-        //setCurrentMovie(movie);
         setModal();
         setCurmovie(movie);
       }}

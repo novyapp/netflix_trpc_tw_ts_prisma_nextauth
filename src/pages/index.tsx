@@ -8,6 +8,7 @@ import Row from "@/components/Row";
 import Modal from "@/components/Modal";
 import { getSession, useSession } from "next-auth/react";
 import { useStore } from "@/store";
+import { CircularProgress } from "@mui/material";
 
 interface Props {
   netflixOriginals: Movie[];
@@ -18,7 +19,7 @@ interface Props {
   horrorMovies: Movie[];
   romanceMovies: Movie[];
   documentaries: Movie[];
-  mymovies: Movie[] | null;
+  mymovies: Movie[];
 }
 
 const Home = ({
@@ -32,18 +33,20 @@ const Home = ({
   trendingNow,
 }: Props) => {
   const { data: session, status } = useSession();
-  console.log(session);
-  const showModal = useStore((state) => state.modal);
-  const setShowModal = useStore((state) => state.setModal);
-
-  //console.log("showModal", showModal);
-  //const showModal = useRecoilValue(modalState);
+  const [showModal, setShowModal] = useStore((state) => [
+    state.modal,
+    state.setModal,
+  ]);
   const { data: mymovies, isLoading: lod } = trpc.useQuery([
     "movies.get-my-movies",
     { open: showModal, userId: session?.user?.id },
   ]);
   if (status === "loading") {
-    return <p>loading</p>;
+    return (
+      <div className="w-screen h-screen flex justify-center items-center bg-black">
+        <CircularProgress />
+      </div>
+    );
   }
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
@@ -56,7 +59,7 @@ const Home = ({
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
-          {!lod && <Row title="My Movies" movies={mymovies} />}
+          {mymovies?.length > 0 && <Row title="My Movies" movies={mymovies} />}
           <Row title="Trending Now" movies={trendingNow} />
           <Row title="Top Rated" movies={topRated} />
           <Row title="Action Thrillers" movies={actionMovies} />

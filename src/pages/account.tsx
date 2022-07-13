@@ -1,8 +1,8 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
-import initStripe from "stripe";
 import Membership from "@/components/Membership";
+import { stripe } from "@/utils/stripe";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import moment from "moment";
 
@@ -24,7 +24,6 @@ const Account = ({ plans, subscriptions }) => {
       console.log("Error creating portal session");
     }
   };
-  //console.log(plans);
   return (
     <div>
       <Head>
@@ -99,9 +98,6 @@ export const getServerSideProps = async (context: any) => {
 
   const stripeId = session?.user?.stripeCustomerId;
 
-  const stripe = initStripe(
-    `sk_test_51LIvOrD5RlaM55m9pGOBlaxfOL7yZ068afFx48bAUgc3Uffr9aD0pZxAxVYTSIzxI6PQYcOUHEK1frFyzgHj4LTg00pvaTkyph`
-  );
   const { data: prices } = await stripe.prices.list();
 
   const { data: subscriptions } = await stripe.subscriptions.list({

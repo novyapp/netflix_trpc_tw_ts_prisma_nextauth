@@ -3,12 +3,9 @@ import { getSession } from "next-auth/react";
 import Stripe from "stripe";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const stripe = new Stripe(
-    "sk_test_51LIvOrD5RlaM55m9pGOBlaxfOL7yZ068afFx48bAUgc3Uffr9aD0pZxAxVYTSIzxI6PQYcOUHEK1frFyzgHj4LTg00pvaTkyph" as string,
-    {
-      apiVersion: "2020-08-27",
-    }
-  );
+  const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY}`, {
+    apiVersion: "2020-08-27",
+  });
 
   // This object will contain the user's data if the user is signed in
   const session = await getSession({ req });
