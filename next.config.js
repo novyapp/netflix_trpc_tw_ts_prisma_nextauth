@@ -5,11 +5,7 @@ const nextConfig = {
     domains: ["image.tmdb.org", "rb.gy"],
   },
   typescript: {
-  !! WARN !!
-  Dangerously allow production builds to successfully complete even if
-  your project has type errors.
-  !! WARN !!
-  ignoreBuildErrors: true,
+    ignoreBuildErrors: true,
   },
 };
 
