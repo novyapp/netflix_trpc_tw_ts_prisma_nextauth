@@ -3,7 +3,7 @@ import { trpc } from "../utils/trpc";
 import { Movie } from "typings";
 import Header from "@/components/Header";
 import Banner from "@/components/Banner";
-import requests from "../utils/requests";
+import requests from "@/utils/requests";
 import Row from "@/components/Row";
 import Modal from "@/components/Modal";
 import { getSession, useSession } from "next-auth/react";
@@ -32,13 +32,15 @@ const Home = ({
   topRated,
   trendingNow,
 }: Props) => {
-  console.log(netflixOriginals);
   const { data: session, status } = useSession();
   const [showModal, setShowModal] = useStore((state) => [
     state.modal,
     state.setModal,
   ]);
-
+  const { data: mymovies, isLoading: lod } = trpc.useQuery([
+    "movies.get-my-movies",
+    { open: showModal, userId: session?.user?.id },
+  ]);
   if (status === "loading") {
     return (
       <div className="w-screen h-screen flex justify-center items-center bg-black">
@@ -56,6 +58,15 @@ const Home = ({
       <Header />
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
+        <section className="md:space-y-24">
+          <Row title="Trending Now" movies={trendingNow} />
+          <Row title="Top Rated" movies={topRated} />
+          <Row title="Action Thrillers" movies={actionMovies} />
+          <Row title="Comedies" movies={comedyMovies} />
+          <Row title="Scary Movies" movies={horrorMovies} />
+          <Row title="Romance Movies" movies={romanceMovies} />
+          <Row title="Documentaries" movies={documentaries} />
+        </section>
       </main>
       {showModal && <Modal />}
     </div>
