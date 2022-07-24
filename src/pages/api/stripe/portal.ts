@@ -23,7 +23,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: session.user.stripeCustomerId,
     // {CHECKOUT_SESSION_ID} is a string literal which the Stripe SDK will replace; do not manually change it or replace it with a variable!
-    return_url: `http://localhost:3000/account`,
+    return_url: `${process.env.NEXTAUTH_URL}/account`,
   });
 
   if (!portalSession.url) {

@@ -6,7 +6,7 @@ import { useState } from "react";
 import Table from "@/components/Table";
 import Loader from "@/components/Loader";
 import { getSession } from "next-auth/react";
-import { stripe } from "@/utils/stripe";
+import { stripe } from "../utils/stripe";
 
 export const getServerSideProps = async (context: any) => {
   const session = await getSession(context);
