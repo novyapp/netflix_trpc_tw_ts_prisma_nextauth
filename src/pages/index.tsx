@@ -3,7 +3,7 @@ import { trpc } from "../utils/trpc";
 import { Movie } from "typings";
 import Header from "@/components/Header";
 import Banner from "@/components/Banner";
-import requests from "@/utils/requests";
+import requests from "../utils/requests";
 import Row from "@/components/Row";
 import Modal from "@/components/Modal";
 import { getSession, useSession } from "next-auth/react";
