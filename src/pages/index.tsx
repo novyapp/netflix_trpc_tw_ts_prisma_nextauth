@@ -81,22 +81,22 @@ export default Home;
 export const getServerSideProps = async (context: any) => {
   const session = await getSession(context);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-  if (!session.user?.isActive) {
-    return {
-      redirect: {
-        destination: "/plans",
-        permanent: false,
-      },
-    };
-  }
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: "/login",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
+  // if (!session.user?.isActive) {
+  //   return {
+  //     redirect: {
+  //       destination: "/plans",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   const [
     netflixOriginals,
