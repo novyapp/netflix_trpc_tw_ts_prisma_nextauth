@@ -36,8 +36,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     ],
     // {CHECKOUT_SESSION_ID} is a string literal which the Stripe SDK will replace; do not manually change it or replace it with a variable!
-    success_url: `${process.env.NEXTAUTH_URL}/?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXTAUTH_URL}/?cancelledPayment=true`,
+    success_url: `${process.env.PUBLIC_URL}/?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.PUBLIC_URL}/?cancelledPayment=true`,
     subscription_data: {
       metadata: {
         // This isn't 100% required, but it helps to have so that we can manually check in Stripe for whether a customer has an active subscription later, or if our webhook integration breaks.

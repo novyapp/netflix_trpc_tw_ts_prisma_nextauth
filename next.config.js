@@ -15,6 +15,7 @@ const nextConfig = {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     JWT_SECRET: process.env.JWT_SECRET,
     TMDB_API_KEY: process.env.TMDB_API_KEY,
+    PUBLIC_URL: process.env.PUBLIC_URL,
   },
   typescript: {
     ignoreBuildErrors: true,
