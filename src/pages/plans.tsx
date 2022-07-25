@@ -11,14 +11,14 @@ import { stripe } from "@/utils/stripe";
 export const getServerSideProps = async (context: any) => {
   const session = await getSession(context);
 
-  // if (session?.user?.userSubscription !== "notier") {
-  //   return {
-  //     redirect: {
-  //       destination: "/",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (session?.user?.userSubscription !== "notier") {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
   const { data: prices } = await stripe.prices.list();
 

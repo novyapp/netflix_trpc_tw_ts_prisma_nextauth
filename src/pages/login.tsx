@@ -7,16 +7,11 @@ import { FaGithub } from "react-icons/fa";
 import { useRouter } from "next/router";
 
 function login({ providers }: any) {
-  // const { data: session, status } = useSession();
+  const { data: session, status } = useSession();
 
-  // if (status === "loading") {
-  //   return <p>Loading...</p>;
-  // }
-
-  // if (session?.user) {
-  //   router.push("/plans");
-  //   return;
-  // }
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="relative flex h-screen w-screen flex-col bg-black md:items-center md:justify-center md:bg-transparent">

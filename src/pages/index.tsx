@@ -59,6 +59,9 @@ const Home = ({
       <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
+          {mymovies?.length > 0 ? (
+            <Row title="My Movies" movies={mymovies} />
+          ) : null}
           <Row title="Trending Now" movies={trendingNow} />
           <Row title="Top Rated" movies={topRated} />
           <Row title="Action Thrillers" movies={actionMovies} />
@@ -78,22 +81,22 @@ export default Home;
 export const getServerSideProps = async (context: any) => {
   const session = await getSession(context);
 
-  // if (!session) {
-  //   return {
-  //     redirect: {
-  //       destination: "/login",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
-  // if (!session.user?.isActive) {
-  //   return {
-  //     redirect: {
-  //       destination: "/plans",
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+  if (!session.user?.isActive) {
+    return {
+      redirect: {
+        destination: "/plans",
+        permanent: false,
+      },
+    };
+  }
 
   const [
     netflixOriginals,
