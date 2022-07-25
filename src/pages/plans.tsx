@@ -6,19 +6,19 @@ import { useState } from "react";
 import Table from "@/components/Table";
 import Loader from "@/components/Loader";
 import { getSession } from "next-auth/react";
-import { stripe } from "@/utils/stripe";
+import { stripe } from "../utils/stripe";
 
 export const getServerSideProps = async (context: any) => {
   const session = await getSession(context);
 
-  if (session?.user?.userSubscription !== "notier") {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
+  // if (session?.user?.userSubscription !== "notier") {
+  //   return {
+  //     redirect: {
+  //       destination: "/",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   const { data: prices } = await stripe.prices.list();
 
@@ -46,6 +46,7 @@ export const getServerSideProps = async (context: any) => {
 };
 
 const Plans = ({ plans }: any) => {
+  console.log(plans);
   const [selectedPlan, setSelectedPlan] = useState<any>(plans[1]);
   const [isBillingLoading, setBillingLoading] = useState<boolean>(false);
 
