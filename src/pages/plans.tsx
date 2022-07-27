@@ -69,19 +69,13 @@ const Plans = ({ plans }: any) => {
   return (
     <div>
       <Head>
-        <title>Netflix</title>
-        <meta name="description" content="Netflix Clone" />
+        <title>Novie</title>
+        <meta name="description" content="Novie" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <header className="border-b border-white/10 bg-[#141414]">
         <Link href="/">
-          <img
-            src="https://rb.gy/ulxxee"
-            alt="Netflix"
-            width={150}
-            height={90}
-            className="cursor-pointer object-contain"
-          />
+          <h1 className="font-extrabold text-6xl text-[#E50914]">NOVIE</h1>
         </Link>
       </header>
       <main className="mx-auto max-w-5xl px-5 pt-28 pb-12 transition-all md:px-10">

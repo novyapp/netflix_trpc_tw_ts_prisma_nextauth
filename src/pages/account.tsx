@@ -32,13 +32,7 @@ const Account = ({ plans, subscriptions }) => {
       </Head>
       <header className={`bg-[#141414]`}>
         <Link href="/">
-          <img
-            src="https://rb.gy/ulxxee"
-            width={120}
-            height={120}
-            className="cursor-pointer object-contain"
-            alt=""
-          />
+          <h1 className="font-extrabold text-6xl text-[#E50914]">NOVIE</h1>
         </Link>
         <Link href="/account">
           <img

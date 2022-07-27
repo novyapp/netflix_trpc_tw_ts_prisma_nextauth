@@ -51,8 +51,8 @@ const Home = ({
   return (
     <div className="relative h-screen bg-gradient-to-b lg:h-[140vh]">
       <Head>
-        <title>Home - Netflix</title>
-        <meta name="description" content="Netflix Clone" />
+        <title>Home - Novie</title>
+        <meta name="description" content="Novie" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />

@@ -34,12 +34,7 @@ function Header() {
   return (
     <header className={`${isScrolled && "bg-[#141414]"}`}>
       <div className="flex items-center space-x-2 md:space-x-10">
-        <img
-          src="https://rb.gy/ulxxee"
-          width={100}
-          height={100}
-          className="cursor-pointer object-contain"
-        />
+        <h1 className="font-extrabold text-6xl text-[#E50914]">NOVIE</h1>
 
         <BasicMenu />
 
